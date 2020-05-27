@@ -120,17 +120,19 @@ peerConnection.ontrack = function ({ streams: [stream] }) {
   }
 };
 
-navigator.getUserMedia(
-  { video: true, audio: true },
-  (stream) => {
-    const localVideo = document.getElementById('local-video');
-    if (localVideo) {
-      localVideo.srcObject = stream;
-    }
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-    stream.getTracks().forEach((track) => peerConnection.addTrack(track, stream));
-  },
-  (error) => {
-    console.warn(error.message);
-  }
-);
+if (navigator.getUserMedia) {
+  navigator.getUserMedia(
+    { video: true, audio: true },
+    (stream) => {
+      const localVideo = document.getElementById('local-video');
+      if (localVideo) {
+        localVideo.srcObject = stream;
+      }
+    },
+    (error) => {
+      console.warn(error.message);
+    }
+  );
+}
